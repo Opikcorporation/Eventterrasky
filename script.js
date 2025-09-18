@@ -1,65 +1,115 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription à l'Événement Immobilier</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+console.log('Fichier script.js : Début du chargement.');
 
-    <div class="container">
-        <div class="event-details">
-            <h1>NOM DE L’ÉVÉNEMENT</h1>
-            <p><strong>Heure d’arrivée :</strong> [À compléter]</p>
-            <p><strong>Adresse précise :</strong> [À compléter]</p>
-            <p><strong>Le thème de la soirée :</strong> Élégant & "Full Black"</p>
-            
-            <h2>PROGRAMME DE LA SOIRÉE</h2>
-            <p>
-                Rejoignez-nous pour une soirée exclusive à Dubaï où l'élégance rencontre l'opportunité. Au programme :
-                <ul>
-                    <li>Annonces immobilières inédites et opportunités d'investissement uniques.</li>
-                    <li>Cadeaux de luxe et tirages au sort pour nos invités.</li>
-                    <li>Présence d'invités surprises et de personnalités reconnues du secteur.</li>
-                    <li>Networking de haut niveau dans une ambiance chic et confidentielle.</li>
-                    <li>Cocktail dînatoire et animations exclusives.</li>
-                </ul>
-                Une occasion à ne pas manquer pour développer votre réseau et découvrir les prochaines tendances de l'immobilier à Dubaï.
-            </p>
-        </div>
+// Fonction pour générer le ticket en tant qu'image (Data URL)
+function generateTicket(firstName, lastName) {
+    console.log('Étape 3 : Appel de la fonction generateTicket().');
+    const canvas = document.createElement('canvas');
+    canvas.width = 500;
+    canvas.height = 200;
+    const ctx = canvas.getContext('2d');
 
-        <div class="form-container">
-            <h2>RÉSERVEZ VOTRE PLACE</h2>
-            <form id="contact-form">
-                <div class="form-group">
-                    <label for="lastName">Nom</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                <div class="form-group">
-                    <label for="firstName">Prénom</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="to_email">Adresse mail</label>
-                    <input type="email" id="to_email" name="to_email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Numéro de téléphone</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <button type="submit" id="submit-btn">Obtenir mon invitation</button>
-            </form>
-            <p id="status-message"></p>
-        </div>
-    </div>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    // Design du ticket
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 500, 200);
+    ctx.strokeStyle = '#166a60';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(0, 0, 500, 200);
     
-    <script src="script.js"></script>
+    // Titre de l'événement (à mettre à jour)
+    ctx.fillStyle = '#166a60';
+    ctx.font = 'bold 30px Montserrat';
+    ctx.textAlign = 'center';
+    ctx.fillText('NOM DE L\'ÉVÉNEMENT', 250, 60);
 
-</body>
-</html>
+    // Nom du participant
+    ctx.fillStyle = '#333333';
+    ctx.font = '24px Lato';
+    ctx.fillText(`${firstName} ${lastName}`, 250, 110);
+    
+    // Texte "Ticket d'entrée"
+    ctx.fillStyle = '#555555';
+    ctx.font = 'italic 18px Lato';
+    ctx.fillText("Ticket d'entrée personnel", 250, 140);
+
+    // Numéro de ticket aléatoire
+    const ticketId = `TICKET-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    ctx.fillStyle = '#166a60';
+    ctx.font = 'bold 16px Lato';
+    ctx.fillText(ticketId, 250, 175);
+
+    console.log('Étape 4 : Ticket généré avec succès.');
+    return canvas.toDataURL('image/png');
+}
+
+// Attend que toute la page soit chargée avant d'exécuter le script
+window.onload = function() {
+    console.log('Étape 1 : La page est entièrement chargée (window.onload).');
+
+    // Initialisation d'EmailJS avec votre Public Key
+    try {
+        emailjs.init('wKj_9D8jdsL0eHBXb');
+        console.log('EmailJS initialisé avec succès.');
+    } catch(e) {
+        console.error('Erreur lors de l\'initialisation d\'EmailJS:', e);
+        return; // Stoppe l'exécution si l'initialisation échoue
+    }
+
+    const contactForm = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const statusMessage = document.getElementById('status-message');
+
+    // Vérifie si le formulaire existe
+    if (!contactForm) {
+        console.error('Erreur critique : Le formulaire avec l\'ID "contact-form" est introuvable.');
+        return;
+    } else {
+        console.log('Le formulaire #contact-form a été trouvé.');
+    }
+
+    // Ajoute l'écouteur d'événement sur la soumission du formulaire
+    contactForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Empêche le rechargement de la page
+        console.log('Étape 2 : Le formulaire a été soumis (clic sur le bouton).');
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Envoi en cours...';
+
+        const firstName = this.firstName.value;
+        const lastName = this.lastName.value;
+        const ticketDataUrl = generateTicket(firstName, lastName);
+        
+        const templateParams = {
+            firstName: firstName,
+            lastName: lastName,
+            to_email: this.to_email.value,
+            phone: this.phone.value,
+            ticket: ticketDataUrl.split(',')[1] // Envoi de la partie base64 pure
+        };
+
+        const serviceID = 'service_2algan2'; 
+        const templateID = 'template_viny53v';
+
+        console.log('Étape 5 : Préparation de l\'envoi vers EmailJS avec les paramètres :', templateParams);
+
+        emailjs.send(serviceID, templateID, templateParams)
+            .then(function(response) {
+                console.log('SUCCÈS ! Réponse du serveur :', response.status, response.text);
+                statusMessage.innerText = 'Merci ! Votre invitation a été envoyée avec succès.';
+                statusMessage.style.color = '#166a60';
+                contactForm.reset();
+            }, function(error) {
+                console.error('ÉCHEC... Erreur renvoyée par EmailJS :', error);
+                statusMessage.innerText = "Une erreur s'est produite. Vérifiez la console pour les détails.";
+                statusMessage.style.color = 'red';
+            })
+            .finally(function() {
+                console.log('Étape 6 : Fin de la tentative d\'envoi.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Obtenir mon invitation';
+            });
+    });
+
+    console.log('L\'écouteur d\'événement est prêt et attend la soumission du formulaire.');
+};
+
+console.log('Fichier script.js : Fin du chargement.');
