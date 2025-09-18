@@ -8,48 +8,42 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="event-details">
-            <h1>EVENT TERRA SKY</h1>
-            <p><strong>Arrival Time:</strong> 7:00 PM</p>
-            <p><strong>Venue:</strong> The First Collection, Business Bay – Dubai</p>
-            <p><strong>Theme:</strong> “Full Black”</p>
-            <p><strong>Dress code:</strong> 100% black</p>
-            
-            <h2>WHAT TO EXPECT</h2>
-            <ul>
-                <li>Engaging Entertainment – dynamic activities to set the mood</li>
-                <li>Cocktail & Dinner – a convivial moment to enjoy together</li>
-                <li>Special Guests – personalities joining to elevate the night</li>
-                <li>Panoramic View of Dubai – a breathtaking backdrop</li>
-                <li>Exclusive Gifts – surprises reserved for attendees</li>
-                <li>Major Announcement – revealed exclusively during the event</li>
-                <li>Guaranteed Networking – connect with the right people</li>
-            </ul>
+    <div class="main-wrapper">
+        <div class="logo-header">
+            <img src="logo.png" alt="Terra Sky Logo">
         </div>
 
-        <div class="form-container">
-            <h2>RESERVE YOUR SPOT</h2>
-            <form id="contact-form">
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="to_email">Email address</label>
-                    <input type="email" id="to_email" name="to_email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone number</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <button type="submit" id="submit-btn">Get My Invitation</button>
-            </form>
-            <p id="status-message"></p>
+        <div class="container">
+            <div class="event-details">
+                <h1>EVENT TERRA SKY</h1>
+                <p><strong>Arrival Time:</strong> 7:00 PM</p>
+                <p><strong>Dress code:</strong> 100% black</p>
+                <h2>WHAT TO EXPECT</h2>
+                <ul>
+                    <li>Engaging Entertainment – dynamic activities to set the mood</li>
+                    <li>Cocktail & Dinner – a convivial moment to enjoy together</li>
+                    <li>Special Guests – personalities joining to elevate the night</li>
+                    <li>Panoramic View of Dubai – a breathtaking backdrop</li>
+                    <li>Exclusive Gifts – surprises reserved for attendees</li>
+                    <li>Major Announcement – revealed exclusively during the event</li>
+                    <li>Guaranteed Networking – connect with the right people</li>
+                </ul>
+            </div>
+            <div class="form-container">
+                <h2>RESERVE YOUR SPOT</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="phone">Phone number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <button type="submit" id="submit-btn">Get My Invitation</button>
+                </form>
+                <p id="status-message"></p>
+            </div>
+        </div>
+
+        <div class="logo-footer">
+            <img src="logo2.png" alt="Partner Logo">
         </div>
     </div>
 
@@ -57,6 +51,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrcode@1/build/qrcode.min.js"></script>
     <script src="script.js"></script>
-
 </body>
 </html>
