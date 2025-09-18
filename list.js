@@ -33,21 +33,30 @@ async function fetchAndDisplayGuests() {
         
         invites.forEach(guest => {
             const row = document.createElement('tr');
-            // On attache les données directement à la ligne pour la popup
+            // On attache les données à la ligne pour la popup
             row.dataset.name = `${guest.prenom} ${guest.nom}`;
             row.dataset.status = guest.statut;
             row.dataset.email = guest.email;
             row.dataset.phone = guest.phone;
 
-            row.innerHTML = `
-                <td>${guest.prenom}</td>
-                <td>${guest.nom}</td>
-                <td>
-                    <span class="status ${guest.statut === 'présent' ? 'status-ok' : 'status-no'}">
-                        ${guest.statut === 'présent' ? 'OK' : 'NO'}
-                    </span>
-                </td>
-            `;
+            // Création explicite de chaque cellule pour plus de robustesse
+            const prenomCell = document.createElement('td');
+            prenomCell.textContent = guest.prenom;
+
+            const nomCell = document.createElement('td');
+            nomCell.textContent = guest.nom;
+            
+            const statusCell = document.createElement('td');
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `status ${guest.statut === 'présent' ? 'status-ok' : 'status-no'}`;
+            statusBadge.textContent = guest.statut === 'présent' ? 'OK' : 'NO';
+            statusCell.appendChild(statusBadge);
+
+            // On ajoute les cellules à la ligne
+            row.appendChild(prenomCell);
+            row.appendChild(nomCell);
+            row.appendChild(statusCell);
+            
             guestListBody.appendChild(row);
         });
 
@@ -74,7 +83,7 @@ function hideModal() {
 guestListBody.addEventListener('click', (e) => {
     const row = e.target.closest('tr');
     if (row && row.dataset.name) {
-        showGuestDetails(row.dataset); // On envoie toutes les données de la ligne
+        showGuestDetails(row.dataset);
     }
 });
 
