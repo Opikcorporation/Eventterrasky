@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner de Billets</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f2f5; margin: 0; padding: 20px; box-sizing: border-box; }
         h1 { color: #166a60; }
         #reader { width: 90%; max-width: 500px; border: 5px solid #ccc; border-radius: 8px; overflow: hidden; }
         #result { margin-top: 20px; padding: 20px; width: 90%; max-width: 500px; border-radius: 8px; text-align: center; font-size: 1.2em; font-weight: bold; color: white; display: none; }
         .success { background-color: #28a745; }
         .error { background-color: #dc3545; }
         .warning { background-color: #ffc107; color: #333; }
+        .nav-button { background-color: #166a60; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; font-size: 16px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
     <h1>SCANNER D'ENTRÉE</h1>
     <div id="reader"></div>
     <div id="result"></div>
+
+    <a href="list.html" class="nav-button">Voir la liste des invités</a>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
