@@ -6,7 +6,11 @@
     <title>Ticket Scanner</title>
     <style>
         body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f2f5; margin: 0; padding: 20px; box-sizing: border-box; }
-        h1 { color: #1d1d1f; text-transform: uppercase; font-family: 'Myanmar MN', sans-serif; }
+        .logo-header { padding-bottom: 20px; text-align: center; }
+        .logo-header img { max-width: 150px; }
+        .logo-footer { padding-top: 30px; text-align: center; }
+        .logo-footer img { max-width: 80px; }
+        h1 { color: #1d1d1f; text-transform: uppercase; font-family: 'Myanmar MN', sans-serif; margin-top: 0; }
         #reader { width: 90%; max-width: 500px; border: 5px solid #ccc; border-radius: 8px; overflow: hidden; }
         #result { margin-top: 20px; padding: 20px; width: 90%; max-width: 500px; border-radius: 8px; text-align: center; font-size: 1.2em; font-weight: bold; color: white; display: none; }
         .success { background-color: #28a745; }
@@ -16,10 +20,16 @@
     </style>
 </head>
 <body>
+    <div class="logo-header">
+        <img src="logo.png" alt="Terra Sky Logo">
+    </div>
     <h1>ENTRY SCANNER</h1>
     <div id="reader"></div>
     <div id="result"></div>
     <a href="list.html" class="nav-button">View Guest List</a>
+    <div class="logo-footer">
+        <img src="logo2.png" alt="Partner Logo">
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
