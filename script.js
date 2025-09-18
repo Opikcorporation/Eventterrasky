@@ -1,17 +1,15 @@
 // ====== CONFIGURATION SUPABASE ET EMAILJS ======
 
-// !! IMPORTANT !! Remplacez par vos propres informations Supabase
-const supabaseUrl = 'VOTRE_URL_SUPABASE'; // Trouvée dans Settings > API
-const supabaseKey = 'VOTRE_CLE_ANON_SUPABASE'; // Trouvée dans Settings > API
+// Vos clés Supabase sont maintenant intégrées
+const supabaseUrl = 'https://vzmqbmhvhlnrjswitalz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXFibWh2aGxucmpzd2l0YWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMDg2OTEsImV4cCI6MjA3Mzc4NDY5MX0.xsZkApz6uI0aBf8OTbmTrGxSogt65buSZj1FbdFOLPw';
 
-// Vos informations EmailJS (ne changent pas)
+// Vos informations EmailJS
 const emailjsPublicKey = 'wKj_9D8jdsL0eHBXb';
 const emailjsServiceID = 'service_2algan2';
 const emailjsTemplateID = 'template_viny53v';
 
 // ====== INITIALISATION DES SERVICES ======
-
-// CORRECTION : On nomme notre client "supabaseClient" pour éviter le conflit.
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 emailjs.init(emailjsPublicKey);
 
@@ -44,7 +42,6 @@ window.onload = function() {
             // --- ÉTAPE 1 : Enregistrer l'invité dans la base de données Supabase ---
             console.log("Étape 1 : Envoi des données à Supabase...");
             
-            // CORRECTION : On utilise "supabaseClient" ici.
             const { data: inviteData, error: supabaseError } = await supabaseClient
                 .from('invites')
                 .insert([{ nom: nom, prenom: prenom, email: email, phone: phone }])
@@ -85,6 +82,7 @@ window.onload = function() {
             statusMessage.innerText = 'Une erreur est survenue. Veuillez réessayer.';
             statusMessage.style.color = 'red';
         } finally {
+            // Dans tous les cas (succès ou échec), on réactive le bouton
             submitBtn.disabled = false;
             submitBtn.innerText = 'Obtenir mon invitation';
         }
