@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Invités</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #166a60; text-align: center; }
+        .nav-button { display: inline-block; background-color: #166a60; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #f7f7f7; }
+        .status { padding: 5px 10px; border-radius: 15px; color: white; font-weight: bold; font-size: 0.8em; }
+        .status-present { background-color: #28a745; }
+        .status-registered { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="scanner.html" class="nav-button">← Retourner au Scanner</a>
+        <h1>LISTE DES INVITÉS</h1>
+        <p>Cette liste se met à jour automatiquement toutes les 10 secondes.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody id="guest-list">
+                </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="list.js"></script>
+</body>
+</html>
