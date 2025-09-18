@@ -1,67 +1,61 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription à l'Événement Immobilier</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <title>Event Terra Sky - Registration</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
         <div class="event-details">
-            <h1>NOM DE L’ÉVÉNEMENT</h1>
-            <p><strong>Heure d’arrivée :</strong> [À compléter]</p>
-            <p><strong>Adresse précise :</strong> [À compléter]</p>
-            <p><strong>Le thème de la soirée :</strong> Élégant & "Full Black"</p>
+            <h1>EVENT TERRA SKY</h1>
+            <p><strong>Arrival Time:</strong> 7:00 PM</p>
+            <p><strong>Venue:</strong> The First Collection, Business Bay – Dubai</p>
+            <p><strong>Theme:</strong> “Full Black”</p>
+            <p><strong>Dress code:</strong> 100% black</p>
             
-            <h2>PROGRAMME DE LA SOIRÉE</h2>
-            <p>
-                Rejoignez-nous pour une soirée exclusive à Dubaï où l'élégance rencontre l'opportunité. Au programme :
-                <ul>
-                    <li>Annonces immobilières inédites et opportunités d'investissement uniques.</li>
-                    <li>Cadeaux de luxe et tirages au sort pour nos invités.</li>
-                    <li>Présence d'invités surprises et de personnalités reconnues du secteur.</li>
-                    <li>Networking de haut niveau dans une ambiance chic et confidentielle.</li>
-                    <li>Cocktail dînatoire et animations exclusives.</li>
-                </ul>
-            </p>
+            <h2>WHAT TO EXPECT</h2>
+            <ul>
+                <li>Engaging Entertainment – dynamic activities to set the mood</li>
+                <li>Cocktail & Dinner – a convivial moment to enjoy together</li>
+                <li>Special Guests – personalities joining to elevate the night</li>
+                <li>Panoramic View of Dubai – a breathtaking backdrop</li>
+                <li>Exclusive Gifts – surprises reserved for attendees</li>
+                <li>Major Announcement – revealed exclusively during the event</li>
+                <li>Guaranteed Networking – connect with the right people</li>
+            </ul>
         </div>
 
         <div class="form-container">
-            <h2>RÉSERVEZ VOTRE PLACE</h2>
+            <h2>RESERVE YOUR SPOT</h2>
             <form id="contact-form">
                 <div class="form-group">
-                    <label for="lastName">Nom</label>
+                    <label for="lastName">Last Name</label>
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
                 <div class="form-group">
-                    <label for="firstName">Prénom</label>
+                    <label for="firstName">First Name</label>
                     <input type="text" id="firstName" name="firstName" required>
                 </div>
                 <div class="form-group">
-                    <label for="to_email">Adresse mail</label>
+                    <label for="to_email">Email address</label>
                     <input type="email" id="to_email" name="to_email" required>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Numéro de téléphone</label>
+                    <label for="phone">Phone number</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
-                <button type="submit" id="submit-btn">Obtenir mon invitation</button>
+                <button type="submit" id="submit-btn">Get My Invitation</button>
             </form>
             <p id="status-message"></p>
         </div>
     </div>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/qrcode@1/build/qrcode.min.js"></script>
-
     <script src="script.js"></script>
 
 </body>
