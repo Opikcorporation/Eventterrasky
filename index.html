@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription à l'Événement Immobilier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="event-details">
+            <h1>NOM DE L’ÉVÉNEMENT</h1>
+            <p><strong>Heure d’arrivée :</strong> [À compléter]</p>
+            <p><strong>Adresse précise :</strong> [À compléter]</p>
+            <p><strong>Le thème de la soirée :</strong> Élégant & "Full Black"</p>
+            
+            <h2>PROGRAMME DE LA SOIRÉE</h2>
+            <p>
+                Rejoignez-nous pour une soirée exclusive à Dubaï où l'élégance rencontre l'opportunité. Au programme :
+                <ul>
+                    <li>Annonces immobilières inédites et opportunités d'investissement uniques.</li>
+                    <li>Cadeaux de luxe et tirages au sort pour nos invités.</li>
+                    <li>Présence d'invités surprises et de personnalités reconnues du secteur.</li>
+                    <li>Networking de haut niveau dans une ambiance chic et confidentielle.</li>
+                    <li>Cocktail dînatoire et animations exclusives.</li>
+                </ul>
+                Une occasion à ne pas manquer pour développer votre réseau et découvrir les prochaines tendances de l'immobilier à Dubaï.
+            </p>
+        </div>
+
+        <div class="form-container">
+            <h2>RÉSERVEZ VOTRE PLACE</h2>
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="lastName">Nom</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="firstName">Prénom</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="to_email">Adresse mail</label>
+                    <input type="email" id="to_email" name="to_email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Numéro de téléphone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <button type="submit" id="submit-btn">Obtenir mon invitation</button>
+            </form>
+            <p id="status-message"></p>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>
