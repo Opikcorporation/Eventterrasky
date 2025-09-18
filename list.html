@@ -6,6 +6,10 @@
     <title>Guest List</title>
     <style>
         body { font-family: 'Avenir Book', Arial, sans-serif; background-color: #f5f5f7; margin: 0; padding: 20px; }
+        .logo-header { text-align: center; padding-bottom: 10px; }
+        .logo-header img { max-width: 150px; }
+        .logo-footer { text-align: center; padding-top: 30px; }
+        .logo-footer img { max-width: 80px; }
         .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         h1 { font-family: 'Myanmar MN', sans-serif; text-transform: uppercase; color: #1d1d1f; text-align: center; }
         .nav-button { display: inline-block; background-color: #1d1d1f; color: white; padding: 10px 20px; border: none; border-radius: 8px; text-decoration: none; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
@@ -19,6 +23,9 @@
     </style>
 </head>
 <body>
+    <div class="logo-header">
+        <img src="logo.png" alt="Terra Sky Logo">
+    </div>
     <div class="container">
         <a href="scanner.html" class="nav-button">← Back to Scanner</a>
         <h1>GUEST LIST</h1>
@@ -34,6 +41,9 @@
             <tbody id="guest-list">
                 </tbody>
         </table>
+    </div>
+     <div class="logo-footer">
+        <img src="logo2.png" alt="Partner Logo">
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
