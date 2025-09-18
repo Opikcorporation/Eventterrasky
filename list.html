@@ -13,29 +13,53 @@
         .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         h1 { font-family: 'Myanmar MN', sans-serif; text-transform: uppercase; color: #1d1d1f; text-align: center; }
         .nav-button { display: inline-block; background-color: #1d1d1f; color: white; padding: 10px 20px; border: none; border-radius: 8px; text-decoration: none; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
-        
-        /* NOUVEAU : Style pour les compteurs */
         .stats-container { display: flex; justify-content: space-around; text-align: center; margin: 20px 0; padding: 20px 0; border-top: 1px solid #e9ecef; border-bottom: 1px solid #e9ecef; }
         .stat-item { flex: 1; }
         .stat-number { font-size: 2em; font-weight: bold; color: #1d1d1f; }
         .stat-label { font-size: 0.9em; color: #6e6e73; text-transform: uppercase; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #d2d2d7; text-align: left; }
-        th { color: #6e6e73; font-weight: 600; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #d2d2d7; text-align: left; }
+        th { color: #6e6e73; font-weight: 600; font-size: 0.9em; }
+        tr { cursor: pointer; transition: background-color 0.2s; }
+        tr:hover { background-color: #f5f5f7; }
         .status { padding: 5px 12px; border-radius: 15px; color: white; font-weight: bold; font-size: 0.8em; text-align: center; }
         .status-present { background-color: #28a745; }
         .status-registered { background-color: #6e6e73; }
+
+        /* NOUVEAU : Styles pour la Popup (Modale) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: white; padding: 30px; border-radius: 18px; max-width: 500px; width: 90%; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; color: #aaa; }
+        .modal-close:hover { color: #333; }
+        .modal-content h2 { font-family: 'Myanmar MN', sans-serif; text-transform: uppercase; color: #1d1d1f; margin-top: 0; }
+        .modal-content p { line-height: 1.8; color: #6e6e73; }
+        .modal-content strong { color: #1d1d1f; }
+
+        /* NOUVEAU : Styles pour la Responsive de la table */
+        @media (max-width: 600px) {
+            thead { display: none; } /* On cache les en-têtes sur mobile */
+            tr { display: block; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; }
+            td { display: block; text-align: right; padding-left: 50%; position: relative; }
+            td:before { 
+                content: attr(data-label); 
+                position: absolute; 
+                left: 15px; 
+                width: 45%; 
+                padding-right: 10px; 
+                white-space: nowrap; 
+                text-align: left; 
+                font-weight: bold;
+                color: #1d1d1f;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="logo-header">
-        <img src="logo.png" alt="Terra Sky Logo">
-    </div>
+    <div class="logo-header"> <img src="logo.png" alt="Terra Sky Logo"> </div>
     <div class="container">
         <a href="scanner.html" class="nav-button">← Back to Scanner</a>
         <h1>GUEST LIST</h1>
-
         <div class="stats-container">
             <div class="stat-item">
                 <div id="present-count" class="stat-number">0</div>
@@ -46,7 +70,6 @@
                 <div class="stat-label">Total Registered</div>
             </div>
         </div>
-
         <table>
             <thead>
                 <tr>
@@ -55,12 +78,19 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody id="guest-list">
-                </tbody>
+            <tbody id="guest-list"></tbody>
         </table>
     </div>
-     <div class="logo-footer">
-        <img src="logo2.png" alt="Partner Logo">
+    <div class="logo-footer"> <img src="logo2.png" alt="Partner Logo"> </div>
+
+    <div id="guest-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="modal-close-btn" class="modal-close">&times;</span>
+            <h2 id="modal-name"></h2>
+            <p><strong>Status:</strong> <span id="modal-status"></span></p>
+            <p><strong>Email:</strong> <span id="modal-email"></span></p>
+            <p><strong>Phone:</strong> <span id="modal-phone"></span></p>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
