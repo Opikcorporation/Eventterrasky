@@ -5,43 +5,52 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // --- Éléments du DOM ---
 const guestListBody = document.getElementById('guest-list');
-const presentCountEl = document.getElementById('present-count'); // Nouvel élément
-const totalCountEl = document.getElementById('total-count');   // Nouvel élément
+const presentCountEl = document.getElementById('present-count');
+const totalCountEl = document.getElementById('total-count');
+
+// --- NOUVEAU : Éléments de la Popup ---
+const modal = document.getElementById('guest-modal');
+const modalName = document.getElementById('modal-name');
+const modalStatus = document.getElementById('modal-status');
+const modalEmail = document.getElementById('modal-email');
+const modalPhone = document.getElementById('modal-phone');
+const closeModalBtn = document.getElementById('modal-close-btn');
+
+let allGuestsData = []; // Pour stocker les données complètes
 
 // --- Logique de la Liste ---
 async function fetchAndDisplayGuests() {
     try {
+        // On récupère toutes les colonnes nécessaires
         const { data: invites, error } = await supabaseClient
             .from('invites')
-            .select('prenom, nom, statut')
+            .select('id, prenom, nom, statut, email, phone') // On ajoute email et phone
             .order('created_at', { ascending: true });
 
         if (error) throw error;
 
-        // Vider la liste
+        allGuestsData = invites; // On sauvegarde les données
         guestListBody.innerHTML = '';
 
-        // --- NOUVEAU : Calculer les statistiques ---
         const totalGuests = invites.length;
         const presentGuests = invites.filter(guest => guest.statut === 'présent').length;
-
-        // Mettre à jour les chiffres sur la page
         presentCountEl.textContent = presentGuests;
         totalCountEl.textContent = totalGuests;
         
-        // Remplir la liste (comme avant)
         invites.forEach(guest => {
             const row = document.createElement('tr');
-            const prenomCell = document.createElement('td');
-            prenomCell.textContent = guest.prenom;
-            const nomCell = document.createElement('td');
-            nomCell.textContent = guest.nom;
-            const statusCell = document.createElement('td');
+            row.dataset.guestId = guest.id; // On ajoute un identifiant à la ligne
+
+            // On ajoute des data-label pour la version responsive
+            const prenomCell = createCell(guest.prenom, "First Name");
+            const nomCell = createCell(guest.nom, "Last Name");
+            
+            const statusCell = createCell('', "Status"); // Cellule vide pour le badge
             const statusBadge = document.createElement('span');
             statusBadge.textContent = guest.statut === 'présent' ? 'Present' : 'Registered';
             statusBadge.className = guest.statut === 'présent' ? 'status status-present' : 'status status-registered';
-            
             statusCell.appendChild(statusBadge);
+            
             row.appendChild(prenomCell);
             row.appendChild(nomCell);
             row.appendChild(statusCell);
@@ -54,7 +63,50 @@ async function fetchAndDisplayGuests() {
     }
 }
 
-// Lancer la fonction au chargement de la page, puis toutes les 10 secondes
+// Helper pour créer les cellules avec les data-labels
+function createCell(text, label) {
+    const cell = document.createElement('td');
+    cell.textContent = text;
+    cell.dataset.label = label;
+    return cell;
+}
+
+// --- NOUVEAU : Logique de la Popup ---
+
+// Afficher les détails d'un invité
+function showGuestDetails(guestId) {
+    const guest = allGuestsData.find(g => g.id === guestId);
+    if (!guest) return;
+
+    modalName.textContent = `${guest.prenom} ${guest.nom}`;
+    modalStatus.textContent = guest.statut === 'présent' ? 'Present' : 'Registered';
+    modalEmail.textContent = guest.email;
+    modalPhone.textContent = guest.phone;
+    
+    modal.style.display = 'flex'; // On affiche la popup
+}
+
+// Cacher la popup
+function hideModal() {
+    modal.style.display = 'none';
+}
+
+// Écouteurs d'événements
+guestListBody.addEventListener('click', (e) => {
+    const row = e.target.closest('tr');
+    if (row && row.dataset.guestId) {
+        showGuestDetails(parseInt(row.dataset.guestId));
+    }
+});
+
+closeModalBtn.addEventListener('click', hideModal);
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) { // Si on clique sur le fond gris
+        hideModal();
+    }
+});
+
+// Lancement
 window.onload = function() {
     fetchAndDisplayGuests();
     setInterval(fetchAndDisplayGuests, 10000);
