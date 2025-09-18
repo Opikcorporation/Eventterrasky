@@ -7,8 +7,6 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const guestListBody = document.getElementById('guest-list');
 const presentCountEl = document.getElementById('present-count');
 const totalCountEl = document.getElementById('total-count');
-
-// --- NOUVEAU : Éléments de la Popup ---
 const modal = document.getElementById('guest-modal');
 const modalName = document.getElementById('modal-name');
 const modalStatus = document.getElementById('modal-status');
@@ -16,20 +14,16 @@ const modalEmail = document.getElementById('modal-email');
 const modalPhone = document.getElementById('modal-phone');
 const closeModalBtn = document.getElementById('modal-close-btn');
 
-let allGuestsData = []; // Pour stocker les données complètes
-
 // --- Logique de la Liste ---
 async function fetchAndDisplayGuests() {
     try {
-        // On récupère toutes les colonnes nécessaires
         const { data: invites, error } = await supabaseClient
             .from('invites')
-            .select('id, prenom, nom, statut, email, phone') // On ajoute email et phone
+            .select('id, prenom, nom, statut, email, phone')
             .order('created_at', { ascending: true });
 
         if (error) throw error;
 
-        allGuestsData = invites; // On sauvegarde les données
         guestListBody.innerHTML = '';
 
         const totalGuests = invites.length;
@@ -39,54 +33,39 @@ async function fetchAndDisplayGuests() {
         
         invites.forEach(guest => {
             const row = document.createElement('tr');
-            row.dataset.guestId = guest.id; // On ajoute un identifiant à la ligne
+            // On attache les données directement à la ligne pour la popup
+            row.dataset.name = `${guest.prenom} ${guest.nom}`;
+            row.dataset.status = guest.statut;
+            row.dataset.email = guest.email;
+            row.dataset.phone = guest.phone;
 
-            // On ajoute des data-label pour la version responsive
-            const prenomCell = createCell(guest.prenom, "First Name");
-            const nomCell = createCell(guest.nom, "Last Name");
-            
-            const statusCell = createCell('', "Status"); // Cellule vide pour le badge
-            const statusBadge = document.createElement('span');
-            statusBadge.textContent = guest.statut === 'présent' ? 'Present' : 'Registered';
-            statusBadge.className = guest.statut === 'présent' ? 'status status-present' : 'status status-registered';
-            statusCell.appendChild(statusBadge);
-            
-            row.appendChild(prenomCell);
-            row.appendChild(nomCell);
-            row.appendChild(statusCell);
+            row.innerHTML = `
+                <td>${guest.prenom}</td>
+                <td>${guest.nom}</td>
+                <td>
+                    <span class="status ${guest.statut === 'présent' ? 'status-ok' : 'status-no'}">
+                        ${guest.statut === 'présent' ? 'OK' : 'NO'}
+                    </span>
+                </td>
+            `;
             guestListBody.appendChild(row);
         });
 
     } catch (error) {
         console.error("Erreur lors de la récupération des invités:", error);
-        guestListBody.innerHTML = `<tr><td colspan="3">Error loading the list.</td></tr>`;
     }
 }
 
-// Helper pour créer les cellules avec les data-labels
-function createCell(text, label) {
-    const cell = document.createElement('td');
-    cell.textContent = text;
-    cell.dataset.label = label;
-    return cell;
+// --- Logique de la Popup ---
+function showGuestDetails(guestData) {
+    modalName.textContent = guestData.name;
+    const isPresent = guestData.status === 'présent';
+    modalStatus.innerHTML = `<span class="status ${isPresent ? 'status-ok' : 'status-no'}">${isPresent ? 'OK' : 'NO'}</span>`;
+    modalEmail.textContent = guestData.email;
+    modalPhone.textContent = guestData.phone;
+    modal.style.display = 'flex';
 }
 
-// --- NOUVEAU : Logique de la Popup ---
-
-// Afficher les détails d'un invité
-function showGuestDetails(guestId) {
-    const guest = allGuestsData.find(g => g.id === guestId);
-    if (!guest) return;
-
-    modalName.textContent = `${guest.prenom} ${guest.nom}`;
-    modalStatus.textContent = guest.statut === 'présent' ? 'Present' : 'Registered';
-    modalEmail.textContent = guest.email;
-    modalPhone.textContent = guest.phone;
-    
-    modal.style.display = 'flex'; // On affiche la popup
-}
-
-// Cacher la popup
 function hideModal() {
     modal.style.display = 'none';
 }
@@ -94,14 +73,14 @@ function hideModal() {
 // Écouteurs d'événements
 guestListBody.addEventListener('click', (e) => {
     const row = e.target.closest('tr');
-    if (row && row.dataset.guestId) {
-        showGuestDetails(parseInt(row.dataset.guestId));
+    if (row && row.dataset.name) {
+        showGuestDetails(row.dataset); // On envoie toutes les données de la ligne
     }
 });
 
 closeModalBtn.addEventListener('click', hideModal);
 modal.addEventListener('click', (e) => {
-    if (e.target === modal) { // Si on clique sur le fond gris
+    if (e.target === modal) {
         hideModal();
     }
 });
