@@ -10,7 +10,9 @@ const emailjsServiceID = 'service_2algan2';
 const emailjsTemplateID = 'template_viny53v';
 
 // ====== INITIALISATION DES SERVICES ======
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// CORRECTION : On nomme notre client "supabaseClient" pour éviter le conflit.
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 emailjs.init(emailjsPublicKey);
 
 // Attend que toute la page soit chargée
@@ -41,14 +43,15 @@ window.onload = function() {
         try {
             // --- ÉTAPE 1 : Enregistrer l'invité dans la base de données Supabase ---
             console.log("Étape 1 : Envoi des données à Supabase...");
-            const { data: inviteData, error: supabaseError } = await supabase
+            
+            // CORRECTION : On utilise "supabaseClient" ici.
+            const { data: inviteData, error: supabaseError } = await supabaseClient
                 .from('invites')
                 .insert([{ nom: nom, prenom: prenom, email: email, phone: phone }])
-                .select() // .select() nous retourne l'entrée qui vient d'être créée
-                .single(); // On s'attend à un seul résultat
+                .select()
+                .single();
 
             if (supabaseError) {
-                // Si Supabase renvoie une erreur (ex: email déjà existant), on l'affiche
                 throw new Error(`Erreur Supabase : ${supabaseError.message}`);
             }
             
@@ -57,7 +60,6 @@ window.onload = function() {
 
             // --- ÉTAPE 2 : Générer le QR Code avec l'ID unique ---
             console.log("Étape 2 : Génération du QR Code...");
-            // QRCode.toDataURL renvoie une image en base64
             const qrCodeDataUrl = await QRCode.toDataURL(inviteId.toString(), { width: 200, margin: 2 });
             console.log("QR Code généré.");
 
@@ -67,7 +69,7 @@ window.onload = function() {
                 firstName: prenom,
                 lastName: nom,
                 to_email: email,
-                qr_code_image: qrCodeDataUrl.split(',')[1] // On envoie juste la data base64
+                qr_code_image: qrCodeDataUrl.split(',')[1]
             };
 
             console.log("Envoi de l'email via EmailJS...");
@@ -79,12 +81,10 @@ window.onload = function() {
             contactForm.reset();
 
         } catch (error) {
-            // Gérer n'importe quelle erreur des étapes ci-dessus
             console.error("Une erreur est survenue durant le processus :", error);
             statusMessage.innerText = 'Une erreur est survenue. Veuillez réessayer.';
             statusMessage.style.color = 'red';
         } finally {
-            // Dans tous les cas (succès ou échec), on réactive le bouton
             submitBtn.disabled = false;
             submitBtn.innerText = 'Obtenir mon invitation';
         }
