@@ -1,4 +1,13 @@
-/* Réinitialisation de base */
+/* -- 1. VARIABLES & STYLES GLOBAUX -- */
+:root {
+    --color-background: #ffffff; /* Fond principal blanc */
+    --color-background-secondary: #f5f5f7; /* Gris très clair pour les fonds */
+    --color-text-primary: #1d1d1f; /* Noir Apple pour le texte principal */
+    --color-text-secondary: #6e6e73; /* Gris pour le texte secondaire */
+    --color-border: #d2d2d7; /* Gris pour les bordures */
+    --color-accent: #007aff; /* Bleu Apple pour les interactions */
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,9 +15,9 @@
 }
 
 body {
-    font-family: 'Lato', 'Avenir Book', sans-serif; /* Avenir Book en fallback */
-    background-color: #fdfdfd;
-    color: #333;
+    font-family: 'Avenir Book', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-primary);
     line-height: 1.6;
     display: flex;
     justify-content: center;
@@ -17,98 +26,103 @@ body {
     padding: 20px;
 }
 
+/* -- 2. CONTENEUR PRINCIPAL -- */
 .container {
-    max-width: 900px;
+    max-width: 960px;
     width: 100%;
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    background-color: var(--color-background);
+    border-radius: 18px; /* Coins arrondis style Apple */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr; /* Une seule colonne par défaut (mobile) */
+    overflow: hidden; /* Pour que les coins arrondis s'appliquent aux enfants */
 }
 
-/* Partie informations sur l'événement */
+/* -- 3. SECTIONS (INFOS & FORMULAIRE) -- */
+.event-details,
+.form-container {
+    padding: 40px;
+}
+
 .event-details {
-    padding-right: 20px;
-    border-right: 1px solid #eee;
+    background-color: var(--color-background-secondary);
 }
 
 h1, h2 {
-    font-family: 'Montserrat', 'Myanmar MN', sans-serif; /* Myanmar MN en fallback */
+    font-family: 'Myanmar MN', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     text-transform: uppercase;
-    color: #111;
-    margin-bottom: 15px;
+    color: var(--color-text-primary);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
 }
 
 h1 {
-    font-size: 2rem;
-    color: #166a60; /* Couleur d'accentuation */
+    font-size: 1.8rem;
 }
 
 h2 {
-    font-size: 1.5rem;
-    margin-top: 25px;
+    font-size: 1.3rem;
+    margin-top: 30px;
 }
 
-.event-details p, .event-details ul {
+.event-details p,
+.event-details ul {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
     margin-bottom: 15px;
 }
 
 .event-details ul {
     list-style-position: inside;
-    padding-left: 10px;
+    padding-left: 0;
 }
 
-/* Partie formulaire */
-.form-container {
-    padding-left: 20px;
-}
-
+/* -- 4. FORMULAIRE -- */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 0.9rem;
+    color: var(--color-text-secondary);
 }
 
 .form-group input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: 'Lato', 'Avenir Book', sans-serif;
+    padding: 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-family: 'Avenir Book', -apple-system, sans-serif;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    background-color: var(--color-background);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #166a60;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2); /* Halo bleu au focus */
 }
 
 button {
     width: 100%;
-    padding: 15px;
-    background-color: #166a60;
-    color: #ffffff;
+    padding: 16px;
+    background-color: var(--color-text-primary); /* Bouton noir */
+    color: var(--color-background);
     border: none;
-    border-radius: 5px;
-    font-family: 'Montserrat', sans-serif;
+    border-radius: 12px;
+    font-family: inherit;
     font-size: 1rem;
-    text-transform: uppercase;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 button:hover {
-    background-color: #115249;
-    transform: translateY(-2px);
+    background-color: #000000; /* Noir plus intense au survol */
 }
 
 button:disabled {
@@ -119,24 +133,17 @@ button:disabled {
 #status-message {
     margin-top: 15px;
     text-align: center;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* -- 5. RESPONSIVE (POUR ÉCRANS LARGES) -- */
+@media (min-width: 800px) {
     .container {
-        grid-template-columns: 1fr;
-        gap: 30px;
+        grid-template-columns: 1fr 1fr; /* Deux colonnes sur les grands écrans */
     }
 
-    .event-details {
-        border-right: none;
-        padding-right: 0;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 30px;
-    }
-
+    .event-details,
     .form-container {
-        padding-left: 0;
+        padding: 50px;
     }
 }
