@@ -45,7 +45,7 @@ async function fetchAndDisplayGuests() {
 
     } catch (error) {
         console.error("Erreur lors de la récupération des invités:", error);
-        guestListBody.innerHTML = `<tr><td colspan="3">Erreur de chargement de la liste. Vérifiez les permissions (RLS).</td></tr>`;
+        guestListBody.innerHTML = `<tr><td colspan="3">Erreur de chargement. Vérifiez les permissions (RLS) pour la lecture (SELECT).</td></tr>`;
     }
 }
 
