@@ -1,115 +1,92 @@
-console.log('Fichier script.js : Début du chargement.');
+// ====== CONFIGURATION SUPABASE ET EMAILJS ======
 
-// Fonction pour générer le ticket en tant qu'image (Data URL)
-function generateTicket(firstName, lastName) {
-    console.log('Étape 3 : Appel de la fonction generateTicket().');
-    const canvas = document.createElement('canvas');
-    canvas.width = 500;
-    canvas.height = 200;
-    const ctx = canvas.getContext('2d');
+// !! IMPORTANT !! Remplacez par vos propres informations Supabase
+const supabaseUrl = 'VOTRE_URL_SUPABASE'; // Trouvée dans Settings > API
+const supabaseKey = 'VOTRE_CLE_ANON_SUPABASE'; // Trouvée dans Settings > API
 
-    // Design du ticket
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 500, 200);
-    ctx.strokeStyle = '#166a60';
-    ctx.lineWidth = 10;
-    ctx.strokeRect(0, 0, 500, 200);
-    
-    // Titre de l'événement (à mettre à jour)
-    ctx.fillStyle = '#166a60';
-    ctx.font = 'bold 30px Montserrat';
-    ctx.textAlign = 'center';
-    ctx.fillText('NOM DE L\'ÉVÉNEMENT', 250, 60);
+// Vos informations EmailJS (ne changent pas)
+const emailjsPublicKey = 'wKj_9D8jdsL0eHBXb';
+const emailjsServiceID = 'service_2algan2';
+const emailjsTemplateID = 'template_viny53v';
 
-    // Nom du participant
-    ctx.fillStyle = '#333333';
-    ctx.font = '24px Lato';
-    ctx.fillText(`${firstName} ${lastName}`, 250, 110);
-    
-    // Texte "Ticket d'entrée"
-    ctx.fillStyle = '#555555';
-    ctx.font = 'italic 18px Lato';
-    ctx.fillText("Ticket d'entrée personnel", 250, 140);
+// ====== INITIALISATION DES SERVICES ======
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+emailjs.init(emailjsPublicKey);
 
-    // Numéro de ticket aléatoire
-    const ticketId = `TICKET-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    ctx.fillStyle = '#166a60';
-    ctx.font = 'bold 16px Lato';
-    ctx.fillText(ticketId, 250, 175);
-
-    console.log('Étape 4 : Ticket généré avec succès.');
-    return canvas.toDataURL('image/png');
-}
-
-// Attend que toute la page soit chargée avant d'exécuter le script
+// Attend que toute la page soit chargée
 window.onload = function() {
-    console.log('Étape 1 : La page est entièrement chargée (window.onload).');
-
-    // Initialisation d'EmailJS avec votre Public Key
-    try {
-        emailjs.init('wKj_9D8jdsL0eHBXb');
-        console.log('EmailJS initialisé avec succès.');
-    } catch(e) {
-        console.error('Erreur lors de l\'initialisation d\'EmailJS:', e);
-        return; // Stoppe l'exécution si l'initialisation échoue
-    }
-
     const contactForm = document.getElementById('contact-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const statusMessage = document.getElementById('status-message');
-
-    // Vérifie si le formulaire existe
     if (!contactForm) {
-        console.error('Erreur critique : Le formulaire avec l\'ID "contact-form" est introuvable.');
+        console.error('Erreur critique : Le formulaire est introuvable.');
         return;
-    } else {
-        console.log('Le formulaire #contact-form a été trouvé.');
     }
 
-    // Ajoute l'écouteur d'événement sur la soumission du formulaire
-    contactForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Empêche le rechargement de la page
-        console.log('Étape 2 : Le formulaire a été soumis (clic sur le bouton).');
+    // On utilise une fonction "async" car on doit attendre la réponse de la base de données
+    contactForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
 
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Envoi en cours...';
-
-        const firstName = this.firstName.value;
-        const lastName = this.lastName.value;
-        const ticketDataUrl = generateTicket(firstName, lastName);
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMessage = document.getElementById('status-message');
         
-        const templateParams = {
-            firstName: firstName,
-            lastName: lastName,
-            to_email: this.to_email.value,
-            phone: this.phone.value,
-            ticket: ticketDataUrl.split(',')[1] // Envoi de la partie base64 pure
-        };
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Enregistrement...';
+        statusMessage.innerText = '';
 
-        const serviceID = 'service_2algan2'; 
-        const templateID = 'template_viny53v';
+        // Récupérer les données du formulaire
+        const prenom = this.firstName.value;
+        const nom = this.lastName.value;
+        const email = this.to_email.value;
+        const phone = this.phone.value;
 
-        console.log('Étape 5 : Préparation de l\'envoi vers EmailJS avec les paramètres :', templateParams);
+        try {
+            // --- ÉTAPE 1 : Enregistrer l'invité dans la base de données Supabase ---
+            console.log("Étape 1 : Envoi des données à Supabase...");
+            const { data: inviteData, error: supabaseError } = await supabase
+                .from('invites')
+                .insert([{ nom: nom, prenom: prenom, email: email, phone: phone }])
+                .select() // .select() nous retourne l'entrée qui vient d'être créée
+                .single(); // On s'attend à un seul résultat
 
-        emailjs.send(serviceID, templateID, templateParams)
-            .then(function(response) {
-                console.log('SUCCÈS ! Réponse du serveur :', response.status, response.text);
-                statusMessage.innerText = 'Merci ! Votre invitation a été envoyée avec succès.';
-                statusMessage.style.color = '#166a60';
-                contactForm.reset();
-            }, function(error) {
-                console.error('ÉCHEC... Erreur renvoyée par EmailJS :', error);
-                statusMessage.innerText = "Une erreur s'est produite. Vérifiez la console pour les détails.";
-                statusMessage.style.color = 'red';
-            })
-            .finally(function() {
-                console.log('Étape 6 : Fin de la tentative d\'envoi.');
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Obtenir mon invitation';
-            });
+            if (supabaseError) {
+                // Si Supabase renvoie une erreur (ex: email déjà existant), on l'affiche
+                throw new Error(`Erreur Supabase : ${supabaseError.message}`);
+            }
+            
+            const inviteId = inviteData.id;
+            console.log(`Invité enregistré avec succès. ID unique : ${inviteId}`);
+
+            // --- ÉTAPE 2 : Générer le QR Code avec l'ID unique ---
+            console.log("Étape 2 : Génération du QR Code...");
+            // QRCode.toDataURL renvoie une image en base64
+            const qrCodeDataUrl = await QRCode.toDataURL(inviteId.toString(), { width: 200, margin: 2 });
+            console.log("QR Code généré.");
+
+            // --- ÉTAPE 3 : Envoyer l'email de confirmation avec le QR Code ---
+            console.log("Étape 3 : Préparation de l'email de confirmation...");
+            const templateParams = {
+                firstName: prenom,
+                lastName: nom,
+                to_email: email,
+                qr_code_image: qrCodeDataUrl.split(',')[1] // On envoie juste la data base64
+            };
+
+            console.log("Envoi de l'email via EmailJS...");
+            await emailjs.send(emailjsServiceID, emailjsTemplateID, templateParams);
+            
+            console.log("Email envoyé avec succès !");
+            statusMessage.innerText = 'Inscription réussie ! Votre billet a été envoyé par email.';
+            statusMessage.style.color = '#166a60';
+            contactForm.reset();
+
+        } catch (error) {
+            // Gérer n'importe quelle erreur des étapes ci-dessus
+            console.error("Une erreur est survenue durant le processus :", error);
+            statusMessage.innerText = 'Une erreur est survenue. Veuillez réessayer.';
+            statusMessage.style.color = 'red';
+        } finally {
+            // Dans tous les cas (succès ou échec), on réactive le bouton
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Obtenir mon invitation';
+        }
     });
-
-    console.log('L\'écouteur d\'événement est prêt et attend la soumission du formulaire.');
 };
-
-console.log('Fichier script.js : Fin du chargement.');
