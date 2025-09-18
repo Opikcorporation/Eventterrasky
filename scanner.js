@@ -1,22 +1,21 @@
 // --- Configuration Supabase ---
 const supabaseUrl = 'https://vzmqbmhvhlnrjswitalz.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXFibWh2aGxucmpzd2l0YWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMDg2OTEsImV4cCI6MjA3Mzc4NDY5MX0.xsZkApz6uI0aBf8OTbmTrGxSogt65buSZj1FbdFOLPw';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// CORRECTION : On nomme notre client "supabaseClient" pour éviter le conflit
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // --- Logique du Scanner ---
 const resultDiv = document.getElementById('result');
 
 // Fonction qui se déclenche quand un QR code est lu
 async function onScanSuccess(decodedText, decodedResult) {
-    // decodedText contient l'ID unique de l'invité
     const inviteId = decodedText;
-    
-    // Mettre en pause le scanner pour éviter de scanner plusieurs fois
     html5QrcodeScanner.clear();
     
     try {
-        // Interroger la base de données pour trouver l'invité par son ID
-        let { data: invite, error } = await supabase
+        // CORRECTION : On utilise "supabaseClient" ici
+        let { data: invite, error } = await supabaseClient
             .from('invites')
             .select('prenom, nom, statut')
             .eq('id', inviteId)
@@ -27,12 +26,11 @@ async function onScanSuccess(decodedText, decodedResult) {
             return;
         }
 
-        // Vérifier le statut de l'invité
         if (invite.statut === 'présent') {
             showResult(`⚠️ Ticket déjà scanné pour ${invite.prenom} ${invite.nom}`, "warning");
         } else {
-            // Mettre à jour le statut à "présent"
-            const { error: updateError } = await supabase
+            // CORRECTION : On utilise "supabaseClient" ici
+            const { error: updateError } = await supabaseClient
                 .from('invites')
                 .update({ statut: 'présent' })
                 .eq('id', inviteId);
@@ -56,15 +54,18 @@ function showResult(message, type) {
     resultDiv.className = type;
     resultDiv.style.display = 'block';
 
-    // Redémarrer le scanner après 5 secondes
     setTimeout(() => {
         resultDiv.style.display = 'none';
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        if (html5QrcodeScanner.getState() === 2) { // 2 = SCANNING
+             // Ne rien faire si le scanner est déjà actif
+        } else {
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        }
     }, 5000);
 }
 
 function onScanFailure(error) {
-    // Gérer les erreurs de scan, mais on peut souvent l'ignorer
+    // On peut ignorer les erreurs de "QR code not found"
 }
 
 // Initialiser le scanner
