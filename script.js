@@ -31,13 +31,20 @@ window.onload = function() {
         const nom = this.lastName.value;
         const email = this.to_email.value;
         const phone = this.phone.value;
+        // ============================
+        // 1. ON RÉCUPÈRE LA LANGUE ICI
+        // ============================
+        const language = this.language.value; 
 
         try {
             // --- ÉTAPE 1 : Enregistrer l'invité dans la base de données Supabase ---
             console.log("Étape 1 : Envoi des données à Supabase...");
             const { data: inviteData, error: supabaseError } = await supabaseClient
                 .from('invites')
-                .insert([{ nom: nom, prenom: prenom, email: email, phone: phone }])
+                // ==============================
+                // 2. ON AJOUTE LA LANGUE À L'ENVOI
+                // ==============================
+                .insert([{ nom: nom, prenom: prenom, email: email, phone: phone, language: language }])
                 .select()
                 .single();
 
@@ -63,7 +70,6 @@ window.onload = function() {
             
             console.log("Email envoyé avec succès !");
             
-            // --- MESSAGE DE SUCCÈS MODIFIÉ ICI ---
             statusMessage.innerHTML = 'Inscription réussie ! / Registration successful!<br>Pensez à vérifier vos spams. / Please check your spam folder.';
             
             statusMessage.style.color = '#166a60';
