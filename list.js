@@ -7,6 +7,9 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const guestListBody = document.getElementById('guest-list');
 const presentCountEl = document.getElementById('present-count');
 const totalCountEl = document.getElementById('total-count');
+// NOUVEAUX ÉLÉMENTS POUR LES COMPTEURS DE LANGUE
+const frCountEl = document.getElementById('fr-count');
+const enCountEl = document.getElementById('en-count');
 const modal = document.getElementById('guest-modal');
 const modalName = document.getElementById('modal-name');
 const modalStatus = document.getElementById('modal-status');
@@ -19,17 +22,20 @@ async function fetchAndDisplayGuests() {
     try {
         const { data: invites, error } = await supabaseClient
             .from('invites')
-            .select('id, prenom, nom, statut, email, phone')
+            // ON RÉCUPÈRE MAINTENANT LA COLONNE "language"
+            .select('id, prenom, nom, statut, email, phone, language')
             .order('created_at', { ascending: true });
 
         if (error) throw error;
 
         guestListBody.innerHTML = '';
 
-        const totalGuests = invites.length;
-        const presentGuests = invites.filter(guest => guest.statut === 'présent').length;
-        presentCountEl.textContent = presentGuests;
-        totalCountEl.textContent = totalGuests;
+        // MISE À JOUR DES STATISTIQUES
+        totalCountEl.textContent = invites.length;
+        presentCountEl.textContent = invites.filter(g => g.statut === 'présent').length;
+        // CALCUL DES COMPTEURS DE LANGUE
+        frCountEl.textContent = invites.filter(g => g.language === 'FR').length;
+        enCountEl.textContent = invites.filter(g => g.language === 'EN').length;
         
         invites.forEach(guest => {
             const row = document.createElement('tr');
@@ -44,6 +50,20 @@ async function fetchAndDisplayGuests() {
             const nomCell = document.createElement('td');
             nomCell.textContent = guest.nom;
             
+            // NOUVELLE CELLULE POUR LE MENU DÉROULANT DE LANGUE
+            const langCell = document.createElement('td');
+            const langSelect = document.createElement('select');
+            langSelect.className = 'language-select';
+            langSelect.dataset.guestId = guest.id; // Pour savoir qui modifier
+            ['', 'FR', 'EN'].forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = lang || '...';
+                if (guest.language === lang) option.selected = true;
+                langSelect.appendChild(option);
+            });
+            langCell.appendChild(langSelect);
+
             const statusCell = document.createElement('td');
             const statusBadge = document.createElement('span');
             statusBadge.className = `status ${guest.statut === 'présent' ? 'status-ok' : 'status-no'}`;
@@ -52,6 +72,7 @@ async function fetchAndDisplayGuests() {
 
             row.appendChild(prenomCell);
             row.appendChild(nomCell);
+            row.appendChild(langCell); // On ajoute la cellule au tableau
             row.appendChild(statusCell);
             
             guestListBody.appendChild(row);
@@ -59,6 +80,21 @@ async function fetchAndDisplayGuests() {
 
     } catch (error) {
         console.error("Erreur lors de la récupération des invités:", error);
+    }
+}
+
+// NOUVELLE FONCTION POUR METTRE À JOUR LA LANGUE
+async function updateLanguage(guestId, newLanguage) {
+    try {
+        const { error } = await supabaseClient
+            .from('invites')
+            .update({ language: newLanguage })
+            .eq('id', guestId);
+        if (error) throw error;
+        fetchAndDisplayGuests(); // On recharge la liste pour voir les compteurs se mettre à jour
+    } catch (error) {
+        console.error('Erreur de mise à jour:', error);
+        alert('Could not update language.');
     }
 }
 
@@ -76,11 +112,23 @@ function hideModal() {
     modal.style.display = 'none';
 }
 
-// Écouteurs d'événements
+// ÉCOUTEURS D'ÉVÉNEMENTS MIS À JOUR
 guestListBody.addEventListener('click', (e) => {
-    const row = e.target.closest('tr');
-    if (row && row.dataset.name) {
-        showGuestDetails(row.dataset);
+    // Si on clique sur une ligne mais PAS sur le menu déroulant, on ouvre la popup
+    if (e.target.tagName !== 'SELECT') {
+        const row = e.target.closest('tr');
+        if (row && row.dataset.name) {
+            showGuestDetails(row.dataset);
+        }
+    }
+});
+
+guestListBody.addEventListener('change', (e) => {
+    // Si on change la valeur du menu déroulant, on met à jour la langue
+    if (e.target.tagName === 'SELECT' && e.target.className === 'language-select') {
+        const guestId = e.target.dataset.guestId;
+        const newLanguage = e.target.value;
+        updateLanguage(guestId, newLanguage);
     }
 });
 
